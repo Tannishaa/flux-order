@@ -2,15 +2,18 @@ import redis
 import time
 import boto3
 import json
+import os
+from dotenv import load_dotenv 
 
-# --- CONFIG ---
-# 1. Paste your Redis details here
-REDIS_HOST = 'redis-14579.c301.ap-south-1-1.ec2.cloud.redislabs.com' # USE YOURS
-REDIS_PORT = 14579                                                   # USE YOURS
-REDIS_PASSWORD = 'Yn9mgIujKzehnxrjbP3QCTVCWbPrwKZ6'                  # USE YOURS
+# Load secrets from the .env file
+load_dotenv() 
 
-# 2. Paste your SQS URL (Same as api.py)
-SQS_QUEUE_URL = "https://sqs.ap-south-1.amazonaws.com/495995448916/flux-order-queue"         # PASTE SQS URL
+# Get values securely
+REDIS_HOST = os.getenv('REDIS_HOST')
+REDIS_PORT = os.getenv('REDIS_PORT')
+REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
+SQS_QUEUE_URL = os.getenv('SQS_QUEUE_URL')
+
 
 # Connect to Redis
 r = redis.Redis(

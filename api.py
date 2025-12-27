@@ -5,8 +5,12 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# --- CONFIG ---
-SQS_QUEUE_URL = "https://sqs.ap-south-1.amazonaws.com/495995448916/flux-order-queue"  # SQS QUEUE URL
+import os
+from dotenv import load_dotenv
+
+# Load secrets from the .env file
+load_dotenv()
+SQS_QUEUE_URL = os.getenv('SQS_QUEUE_URL')  # SQS QUEUE URL
 AWS_REGION = "ap-south-1"
 
 # Initialize SQS

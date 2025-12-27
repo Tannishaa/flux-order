@@ -45,7 +45,7 @@ flowchart LR
 ---
 
 ## Tech Stack
-* **Language:** Python 3.9+
+* **Language:** Python 3.x
 * **API:** Flask
 * **Queue:** AWS SQS (Simple Queue Service)
 * **Locking/Cache:** Redis (Cloud)

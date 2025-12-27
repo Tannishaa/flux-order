@@ -1,6 +1,6 @@
-# Flux-Order: High-Concurrency Flash Sale Engine 
+## Distributed High-Concurrency Order Engine
 
-Flux-Order is a distributed order processing system designed to handle high-traffic "Flash Sale" events (like ticket sales or product drops) without crashing or overselling inventory. 
+A distributed system designed to handle high-traffic "Flash Sale" events without race conditions or inventory overselling.
 
 It solves the classic **"Double Booking" Race Condition** problem using **Redis Distributed Locks (Mutex)** and decouples traffic using **AWS SQS**.
 

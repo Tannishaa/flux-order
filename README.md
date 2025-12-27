@@ -80,8 +80,8 @@ source venv/bin/activate
 
 pip install -r requirements.txt
 ```
-5. Environment Variables (Security )
-Create a .env file in the root directory. Do not hardcode secrets.
+5. Environment Variables (Security)
+* Create a .env file in the root directory. Do not hardcode secrets.
 
 ```Ini, TOML
 
@@ -110,7 +110,7 @@ python worker.py
 ```
 *Worker is listening for orders...*
 
-### Step 3: Simulate a Race Condition 🏁
+### Step 3: Simulate a Race Condition 
 Send two requests for the same ticket (ticket_001) from two different users.
 
 Request 1 (Success):
@@ -139,5 +139,4 @@ Expected Output in Worker Terminal:
 
 * Containerize the worker using Docker.
 
-#### Made by:
-Tanisha
+###### Made by: Tanisha

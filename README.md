@@ -6,8 +6,24 @@ It solves the classic **"Double Booking" Race Condition** problem using **Redis 
 
 ---
 
-## 🏗 Architecture
-[Image of event driven architecture diagram]
+##  Architecture
+```mermaid
+flowchart LR
+    User((User)) -->|POST /buy| API[Flask API]
+    API -->|1. Push Order| SQS[(AWS SQS)]
+    
+    subgraph "Worker Service (Scaled)"
+        SQS -->|2. Pull Order| Worker[Python Worker]
+        Worker <-->|3. Acquire Lock| Redis[(Redis Cloud)]
+        Worker -->|4. Validate & Save| DDB[(DynamoDB)]
+    end
+
+    style API fill:#ff9900,stroke:#333,stroke-width:2px,color:white
+    style SQS fill:#ff9900,stroke:#333,stroke-width:2px,color:white
+    style Redis fill:#dc382d,stroke:#333,stroke-width:2px,color:white
+    style DDB fill:#4053ba,stroke:#333,stroke-width:2px,color:white
+    style Worker fill:#326ce5,stroke:#333,stroke-width:2px,color:white
+```
 
 **The Flow:**
 1.  **Ingestion:** User hits the API (`/buy`). The request is instantly acknowledged and pushed to an **AWS SQS** queue (The Waiting Room).

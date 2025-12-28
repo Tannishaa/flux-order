@@ -25,7 +25,9 @@ sqs = boto3.client('sqs', region_name='ap-south-1')
 
 # Initialize DynamoDB Resource
 dynamodb = boto3.resource('dynamodb', region_name='ap-south-1')
-table = dynamodb.Table('FluxOrders')
+# Use the variable from .env
+DYNAMODB_TABLE = os.getenv('DYNAMODB_TABLE') 
+table = dynamodb.Table(DYNAMODB_TABLE)
 
 def process_order(user_id, item_id, receipt_handle):
     lock_key = f"lock:{item_id}"

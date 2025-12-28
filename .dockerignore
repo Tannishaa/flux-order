@@ -1,0 +1,21 @@
+# 1. Ignore the Virtual Environment
+venv/
+env/
+
+# 2. Ignore Git History
+.git/
+.gitignore
+
+# 3. Ignore Secrets
+.env
+
+# 4. Ignore Terraform Junk
+terraform/
+
+# 5. Ignore Python Cache
+__pycache__/
+*.pyc
+
+# 6. Ignore IDE Settings
+.vscode/
+.idea/

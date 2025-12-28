@@ -29,7 +29,12 @@ jobs:
         pip install -r requirements.txt
         pip install pytest
 
-    # 4. Run the tests (The moment of truth)
+    # 4. Run the tests (With fake environment variables)
     - name: Run Tests
+      env:
+        SQS_QUEUE_URL: "https://sqs.ap-south-1.amazonaws.com/00000000/fake-queue"
+        AWS_REGION: "ap-south-1"
+        AWS_ACCESS_KEY_ID: "testing"
+        AWS_SECRET_ACCESS_KEY: "testing"
       run: |
         python -m pytest

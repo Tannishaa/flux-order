@@ -1,56 +1,47 @@
-import boto3
-import json
-import uuid
 from flask import Flask, request, jsonify
+import boto3
+import os
+import json
+from dotenv import load_dotenv
+
+# Load env vars
+load_dotenv()
 
 app = Flask(__name__)
 
-import os
-from dotenv import load_dotenv
+# Config
+AWS_REGION = os.getenv("AWS_REGION", "ap-south-1")
+SQS_QUEUE_URL = os.getenv("SQS_QUEUE_URL")
 
-# Load secrets from the .env file
-load_dotenv()
-SQS_QUEUE_URL = os.getenv('SQS_QUEUE_URL')  # SQS QUEUE URL
-AWS_REGION = "ap-south-1"
-
-# Initialize SQS
-sqs = boto3.client('sqs', region_name=AWS_REGION)
+# Set up AWS Client
+# We use a try-except block so the app doesn't crash immediately if AWS is unreachable
+try:
+    sqs = boto3.client('sqs', region_name=AWS_REGION)
+except Exception as e:
+    print(f"Warning: AWS Connection failed. {e}")
+    sqs = None
 
 @app.route('/buy', methods=['POST'])
-def buy_ticket():
-    try:
-        # 1. Get User Data
-        data = request.json
-        user_id = data.get('user_id')
-        item_id = data.get('item_id', 'ticket_001') # Default to Ticket 1
-        
-        # 2. Generate a Unique Order ID
-        order_id = str(uuid.uuid4())
-        
-        # 3. Create the Message Payload
-        message_body = {
-            "order_id": order_id,
-            "user_id": user_id,
-            "item_id": item_id,
-            "status": "PENDING"
-        }
-        
-        # 4. Push to SQS (The "Waiting Room")
-        response = sqs.send_message(
-            QueueUrl=SQS_QUEUE_URL,
-            MessageBody=json.dumps(message_body)
-        )
-        
-        # 5. Instant Response to User
-        return jsonify({
-            "message": "Order Received! You are in line.",
-            "order_id": order_id,
-            "queue_msg_id": response['MessageId']
-        }), 200
+def buy():
+    # 1. Input Validation (Fixes Failure #1)
+    data = request.json
+    if not data or 'user_id' not in data or 'item_id' not in data:
+        return jsonify({'error': 'Missing user_id or item_id'}), 400
 
+    # 2. Safety Check (Fixes Failure #2)
+    if not SQS_QUEUE_URL:
+        return jsonify({'error': 'Server Misconfiguration: Queue URL missing'}), 500
+
+    try:
+        # 3. Send to SQS
+        sqs.send_message(
+            QueueUrl=SQS_QUEUE_URL,
+            MessageBody=json.dumps(data)
+        )
+        return jsonify({'message': 'Order received', 'order': data}), 200
+    
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    # host='0.0.0.0' allows connections from outside the container
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)

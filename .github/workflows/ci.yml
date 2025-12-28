@@ -1,0 +1,35 @@
+name: Flux Order CI
+
+# Trigger: Run this whenever code is pushed to the 'main' branch
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    # Use a Linux machine hosted by GitHub
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Download the code
+    - uses: actions/checkout@v3
+
+    # 2. Install Python 3.11
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+
+    # 3. Install your libraries + Testing tools
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest
+
+    # 4. Run the tests (The moment of truth)
+    - name: Run Tests
+      run: |
+        python -m pytest

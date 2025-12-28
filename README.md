@@ -64,3 +64,17 @@ docker-compose up --build -d
 
 Invoke-RestMethod -Uri "http://localhost:5000/buy" -Method Post -ContentType "application/json" -Body '{"user_id": "test_user", "item_id": "ticket_1"}'
 ```
+5. **Observability (Dashboard):**
+   Launch the real-time mission control dashboard to visualize queue depth and sales:
+   ```Bash
+   streamlit run dashboard.py
+   ``` 
+   Access the dashboard at `http://localhost:8501`
+
+6. **Testing & CI/CD: Run the unit test suite locally:**
+
+```Bash
+
+python -m pytest
+```
+*Note: This project uses GitHub Actions for automated CI/CD. Every push to main triggers a remote test run.*

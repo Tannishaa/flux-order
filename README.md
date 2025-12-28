@@ -25,4 +25,4 @@ A resilient, event-driven microservices architecture designed to handle high-tra
    ```bash
    cd terraform
    terraform init && terraform apply
-```
+   ```

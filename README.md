@@ -9,8 +9,8 @@ graph TD
     API -->|1. Push Order| SQS[(AWS SQS Queue)]
     SQS -->|2. Poll Message| Worker[Python Worker]
     Worker -->|3. Acquire Lock| Redis[(Redis Cache)]
-    Worker -- If Locked -->|Retry Later| SQS
-    Worker -- If Free -->|4. Check & Save| DB[(AWS DynamoDB)]
+    Redis -->|If Locked| SQS
+    Redis -->|If Free| DB[(AWS DynamoDB)]
 ```
 - **API (Flask):** Accepts orders and pushes them to an SQS Queue (Asynchronous processing).
 - **Worker (Python):** Polls SQS, acquires a Distributed Lock (Redis), and updates DynamoDB.

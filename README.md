@@ -78,3 +78,8 @@ Invoke-RestMethod -Uri "http://localhost:5000/buy" -Method Post -ContentType "ap
 python -m pytest
 ```
 *Note: This project uses GitHub Actions for automated CI/CD. Every push to main triggers a remote test run.*
+
+##  Security & Resilience
+* **Secret Management:** Utilizes environment variables via `.env` files (excluded from version control) and Docker `env_file` injection.
+* **Infrastructure Security:** Uses IAM roles with least-privilege access for AWS SQS and DynamoDB interactions.
+* **History Hygiene:** Repository history is periodically audited and scrubbed of any legacy configuration strings using `git-filter-repo`.

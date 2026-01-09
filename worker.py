@@ -6,19 +6,29 @@ import os
 from dotenv import load_dotenv 
 
 # Load secrets from the .env file
-load_dotenv() 
+# worker.py
 
-# Get values securely
+# ... imports ...
+
+# Load secrets
+load_dotenv()
+
+# Get values
 REDIS_HOST = os.getenv('REDIS_HOST')
-REDIS_PORT = os.getenv('REDIS_PORT')
+# 👇 FIX: Convert string to integer
+REDIS_PORT = int(os.getenv('REDIS_PORT', 6379)) 
 REDIS_PASSWORD = os.getenv('REDIS_PASSWORD')
 SQS_QUEUE_URL = os.getenv('SQS_QUEUE_URL')
 
-
 # Connect to Redis
 r = redis.Redis(
-    host=REDIS_HOST, port=REDIS_PORT, password=REDIS_PASSWORD, decode_responses=True
+    host=REDIS_HOST, 
+    port=REDIS_PORT, 
+    password=REDIS_PASSWORD, 
+    decode_responses=True
 )
+
+# ... rest of your code ...
 
 # Connect to SQS
 sqs = boto3.client('sqs', region_name='ap-south-1')

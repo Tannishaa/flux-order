@@ -3,7 +3,7 @@
 
 *A resilient, event-driven microservices architecture designed to handle high-traffic flash sales without race conditions or inventory overselling.*
 
-##  Architecture
+## Architecture
 ```mermaid
 graph TD
     User((User)) -->|POST /buy| API[Flask API]
@@ -24,11 +24,12 @@ graph TD
 - **Containerization:** Docker & Docker Compose
 - **IaC:** Terraform
 - **Database:** Redis (Locking), DynamoDB (Storage)
-
+- **Testing:** Locust (Load Testing), Pytest (Unit Testing)
 ##  Key Features
 - **Zero Race Conditions:** Uses Redis `SET NX` (Mutex) to ensure atomic inventory checks.
 - **Scalable:** Workers can be scaled horizontally (`docker-compose up --scale worker=3`).
 - **Fault Tolerant:** Failed orders are returned to the queue for retry.
+- **High Concurrency:** Tested to handle 160+ RPS with 1000+ concurrent users.
 
 ##  How to Run
 1. **Infrastructure:**
@@ -58,28 +59,38 @@ graph TD
 
 docker-compose up --build -d
 ```
-4. **Test: Send a buy request:**
+4. **Observability (Live Monitor)**
+Launch the TUI (Terminal User Interface) to see real-time queue depth and worker status:
 
-```PowerShell
+```Bash
 
-Invoke-RestMethod -Uri "http://localhost:5000/buy" -Method Post -ContentType "application/json" -Body '{"user_id": "test_user", "item_id": "ticket_1"}'
+python monitor.py
 ```
-5. **Observability (Dashboard):**
-   Launch the real-time mission control dashboard to visualize queue depth and sales:
-   ```Bash
-   streamlit run dashboard.py
-   ``` 
-   Access the dashboard at `http://localhost:8501`
+5. **Stress Testing (Locust)**
+Simulate thousands of concurrent users to test system resilience:
 
-6. **Testing & CI/CD: Run the unit test suite locally:**
+* Start the swarm:
 
+```Bash
+
+locust
+```
+* Open http://localhost:8089 in your browser.
+
+* Set Users to 1000, Spawn Rate to 50, and Host to http://localhost:5000.
+
+* Click Start Swarming and watch the dashboard!
+6. **Unit Testing**
+Run the test suite locally:
 ```Bash
 
 python -m pytest
 ```
-*Note: This project uses GitHub Actions for automated CI/CD. Every push to main triggers a remote test run.*
+`Note: This project uses GitHub Actions for automated CI/CD. Every push to main triggers a remote test run.`
 
-##  Security & Resilience
-* **Secret Management:** Utilizes environment variables via `.env` files (excluded from version control) and Docker `env_file` injection.
-* **Infrastructure Security:** Uses IAM roles with least-privilege access for AWS SQS and DynamoDB interactions.
-* **History Hygiene:** Repository history is periodically audited and scrubbed of any legacy configuration strings using `git-filter-repo`.
+## Security & Resilience
+**Secret Management:** Utilizes environment variables via `.env` files (excluded from version control) and Docker `env_file` injection.
+
+**Infrastructure Security:** Uses IAM roles with least-privilege access for AWS SQS and DynamoDB interactions.
+
+**History Hygiene:** Repository history is periodically audited and scrubbed of any legacy configuration strings using `git-filter-repo`.

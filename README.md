@@ -1,6 +1,8 @@
 # Flux-Order: High-Concurrency Ticketing System
 ![CI Status](https://github.com/Tannishaa/flux-order/actions/workflows/ci.yml/badge.svg)
-Frontend Repository: This project works in tandem with the [Flux Cinema Frontend](https://github.com/Tannishaa/flux-cinema-frontend)
+
+* Frontend Repository: This project works in tandem with the [Flux Cinema Frontend](https://github.com/Tannishaa/flux-cinema-frontend)
+
 *A resilient, event-driven microservices architecture designed to handle high-traffic flash sales without race conditions or inventory overselling.*
 
 ## Architecture

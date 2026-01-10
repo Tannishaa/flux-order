@@ -4,14 +4,15 @@
 *A resilient, event-driven microservices architecture designed to handle high-traffic flash sales without race conditions or inventory overselling.*
 
 ## Architecture
-```mermaid
-graph TD
-    User((User)) -->|POST /buy| API[Flask API]
+```graph TD
+    User((User)) -->|Select Seat| FE[Next.js Frontend]
+    FE -->|POST /buy| API[Flask API]
     API -->|1. Push Order| SQS[(AWS SQS Queue)]
     SQS -->|2. Poll Message| Worker[Python Worker]
-    Worker -->|3. Acquire Lock| Redis[(Redis Cache)]
-    Redis -->|If Locked| SQS
-    Redis -->|If Free| DB[(AWS DynamoDB)]
+    Worker -->|3. Acquire Lock| Redis[(Redis Distributed Lock)]
+    Worker -->|4. Confirm Sale| DB[(AWS DynamoDB)]
+    FE -.->|5. Real-time Polling| API
+    API -.->|6. Fetch Sold Seats| DB
 ```
 - **API (Flask):** Accepts orders and pushes them to an SQS Queue (Asynchronous processing).
 - **Worker (Python):** Polls SQS, acquires a Distributed Lock (Redis), and updates DynamoDB.
@@ -31,7 +32,12 @@ graph TD
 - **Fault Tolerant:** Failed orders are returned to the queue for retry.
 - **High Concurrency:** Tested to handle 160+ RPS with 1000+ concurrent users.
 
-## ⚙️ Logic & Architecture
+##  System Performance & Observability
+- **Monitoring:** Implemented a custom TUI (Terminal User Interface) dashboard using the `Rich` library to monitor real-time queue depth, revenue, and worker health.
+- **Race Condition Testing:** Verified using two simultaneous frontend sessions; Redis Distributed Locking successfully rejected overlapping requests for the same `item_id`.
+- **Latency:** Sub-second processing time from SQS message pickup to DynamoDB confirmation.
+
+##  Logic & Architecture
 This project is an exploration of high-concurrency distributed systems.
 
 * **Message Broker:** Utilizes AWS SQS for decoupling.

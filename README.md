@@ -31,62 +31,14 @@ graph TD
 - **Fault Tolerant:** Failed orders are returned to the queue for retry.
 - **High Concurrency:** Tested to handle 160+ RPS with 1000+ concurrent users.
 
-##  How to Run
-1. **Infrastructure:**
-   ```bash
-   cd terraform
-   terraform init && terraform apply
-   ```
-2. **Configuration:**
-   Create a `.env` file in the root directory with your AWS credentials and Terraform outputs:
-   ```ini
-   # AWS Credentials
-   AWS_ACCESS_KEY_ID=your_access_key
-   AWS_SECRET_ACCESS_KEY=your_secret_key
-   AWS_REGION=ap-south-1
+## ⚙️ Logic & Architecture
+This project is an exploration of high-concurrency distributed systems.
 
-   # Infrastructure Config (From Terraform Outputs)
-   SQS_QUEUE_URL=https://sqs.ap-south-1.amazonaws.com/123456789/flux-queue-iac
-   DYNAMODB_TABLE=FluxOrdersIAC
+* **Message Broker:** Utilizes AWS SQS for decoupling.
+* **Concurrency Control:** Implements a Redis-based Distributed Lock (Mutex) to prevent race conditions during seat selection.
+* **Database:** DynamoDB for persistent, low-latency storage of confirmed orders.
 
-   # Redis Config
-   REDIS_HOST=redis
-   REDIS_PORT=6379
-   ```
-3. **Deploy: Run the containers in the background:**
-
-```Bash
-
-docker-compose up --build -d
-```
-4. **Observability (Live Monitor)**
-Launch the TUI (Terminal User Interface) to see real-time queue depth and worker status:
-
-```Bash
-
-python monitor.py
-```
-5. **Stress Testing (Locust)**
-Simulate thousands of concurrent users to test system resilience:
-
-* Start the swarm:
-
-```Bash
-
-locust
-```
-* Open http://localhost:8089 in your browser.
-
-* Set Users to 1000, Spawn Rate to 50, and Host to http://localhost:5000.
-
-* Click Start Swarming and watch the dashboard!
-6. **Unit Testing**
-Run the test suite locally:
-```Bash
-
-python -m pytest
-```
-`Note: This project uses GitHub Actions for automated CI/CD. Every push to main triggers a remote test run.`
+ **Note:** `To protect the integrity of the project and prevent unauthorized duplication, setup and deployment instructions are not provided publicly. If you are a recruiter or an engineer interested in the infrastructure setup, please reach out to me directly!`
 
 ## Security & Resilience
 **Secret Management:** Utilizes environment variables via `.env` files (excluded from version control) and Docker `env_file` injection.

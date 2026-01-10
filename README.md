@@ -4,7 +4,7 @@
 *A resilient, event-driven microservices architecture designed to handle high-traffic flash sales without race conditions or inventory overselling.*
 
 ## Architecture
-```graph TD
+```mermaid
     User((User)) -->|Select Seat| FE[Next.js Frontend]
     FE -->|POST /buy| API[Flask API]
     API -->|1. Push Order| SQS[(AWS SQS Queue)]

@@ -25,20 +25,29 @@ except Exception as e:
     table = None
 
 # --- 1. GET INVENTORY (New!) ---
+# --- 1. GET INVENTORY (Updated for "Who Won?" Logic) ---
 @app.route('/inventory', methods=['GET'])
 def get_inventory():
     if not table:
         return jsonify([]), 500
     
     try:
-        # Scan returns everything. (In production, we'd query, but Scan is fine here)
-        response = table.scan(ProjectionExpression='item_id')
+        # Scan DynamoDB
+        response = table.scan()
         items = response.get('Items', [])
-        # Convert to a simple list: ['A1', 'B2', 'C3']
-        sold_ids = [item['item_id'] for item in items]
         
-        # MANUAL CORS (Since we are in manual mode)
-        resp = jsonify(sold_ids)
+        # Return ID + Owner Name
+        # Format: [{'id': 'A1', 'owner': 'Tanisha'}, {'id': 'B2', 'owner': 'Recruiter'}]
+        inventory_data = [
+            {
+                'id': item['item_id'], 
+                'owner': item.get('user_id', 'Unknown')
+            } 
+            for item in items
+        ]
+        
+        # CORS
+        resp = jsonify(inventory_data)
         resp.headers.add('Access-Control-Allow-Origin', '*')
         return resp
     except Exception as e:

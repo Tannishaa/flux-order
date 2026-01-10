@@ -1,4 +1,4 @@
-# 1. Ignore the Virtual Environment
+# 1. Ignore the Virtual Environment (468 MB)
 venv/
 env/
 
@@ -9,13 +9,18 @@ env/
 # 3. Ignore Secrets
 .env
 
-# 4. Ignore Terraform Junk
+# 4. Ignore Terraform Junk (780 MB)
 terraform/
 
-# 5. Ignore Python Cache
+# 5. Ignore Frontend Node Modules (501 MB)
+frontend/
+
+# 6. Ignore Python/Test/Streamlit Cache
 __pycache__/
 *.pyc
+.pytest_cache/
+.streamlit/
 
-# 6. Ignore IDE Settings
+# 7. Ignore IDE Settings
 .vscode/
 .idea/

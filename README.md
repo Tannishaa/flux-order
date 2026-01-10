@@ -5,6 +5,7 @@
 
 ## Architecture
 ```mermaid
+graph TD
     User((User)) -->|Select Seat| FE[Next.js Frontend]
     FE -->|POST /buy| API[Flask API]
     API -->|1. Push Order| SQS[(AWS SQS Queue)]

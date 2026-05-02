@@ -18,7 +18,7 @@ graph TD
     FE -.->|5. Real-time Polling| API
     API -.->|6. Fetch Sold Seats| DB
 ```
--**API (Flask)**: Hosted on Render, accepts orders and pushes them to an SQS Queue to prevent server saturation.
+- **API (Flask)**: Hosted on Render, accepts orders and pushes them to an SQS Queue to prevent server saturation.
 - **Worker (Python)**: Polls SQS, acquires a Distributed Lock (Upstash Redis), and updates DynamoDB.
 - **Infrastructure**: AWS resources fully managed via Terraform (IaC).
 - **Deployment Strategy**: Hybrid-Cloud (Cloud-hosted API/DBs with decoupled background workers), with full local Docker Compose support
